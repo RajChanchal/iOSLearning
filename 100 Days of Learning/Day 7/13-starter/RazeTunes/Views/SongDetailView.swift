@@ -106,6 +106,7 @@ struct SongDetailView: View {
   }
 
   // MARK: Functions
+  /// downloads artwork
   private func downloadArtwork() async {
     guard let artworkURL = URL(string: musicItem.artwork) else {
       return
