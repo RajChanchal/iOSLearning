@@ -48,7 +48,7 @@ class SongDownloader: ObservableObject {
   }
 
   // MARK: Properties
-  @Published var downloadLocation: URL?
+  @MainActor @Published var downloadLocation: URL?
 
   private let session: URLSession
   private let sessionConfiguration: URLSessionConfiguration
@@ -115,14 +115,45 @@ class SongDownloader: ObservableObject {
   func downloadSongBytes(url: URL, progress: Binding<Float>) async throws {
     do {
       let (bytes, response) = try await session.bytes(from: url)
-      var data = Data(capacity: Int(response.expectedContentLength))
+      guard let httpsURLResponse = response as? HTTPURLResponse, 200..<300 ~= httpsURLResponse.statusCode else {
+        throw SongDownloadError.invalidResponse
+      }
+      let contentLength = Int(response.expectedContentLength)
+      var data = Data(capacity: contentLength)
       for try await byte in bytes {
         data.append(byte)
-        let currentProgress = data.count 
+        let currentProgress = Float(data.count) / Float(contentLength)
+        if Int(currentProgress * 100.0) != Int(progress.wrappedValue * 100.0) {
+          progress.wrappedValue = currentProgress
+        }
       }
-    } catch {
-      throw SongDownloadError.invalidResponse
+      let savedFileLocation = try await saveDataToFile(data: data, fileName: url.lastPathComponent)
+      await MainActor.run {
+        downloadLocation = savedFileLocation
+      }
+      
+    } catch let error as SongDownloadError {
+      throw error
+    } catch let error {
+      throw error
     }
-    
+  }
+  
+  private func saveDataToFile(data: Data, fileName: String) async throws -> URL {
+    let fileManager = FileManager.default
+    do {
+      guard let documentDirectoryUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+        throw SongDownloadError.documentDirectoryError
+      }
+      let localFilePath = documentDirectoryUrl.appendingPathComponent(fileName)
+      if fileManager.fileExists(atPath: localFilePath.path) {
+        try fileManager.removeItem(at: localFilePath)
+      }
+      try data.write(to: localFilePath)
+      return localFilePath
+    }
+    catch {
+      throw SongDownloadError.failedToStoreSong
+    }
   }
 }
