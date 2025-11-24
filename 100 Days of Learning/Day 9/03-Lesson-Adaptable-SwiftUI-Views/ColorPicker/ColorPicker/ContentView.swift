@@ -38,6 +38,7 @@ struct ContentView: View {
     @State private var redValue = 0.0
     @State private var greenValue = 0.0
     @State private var blueValue = 0.0
+    @State private var opacity = 1.0
   var body: some View {
     VStack {
       RoundedRectangle(cornerRadius: 16)
@@ -53,9 +54,14 @@ struct ContentView: View {
         Text("Blue")
         Slider(value: $blueValue, in: 0...250)
             .tint(.blue)
+        Text("Opacity")
+        HStack {
+            Slider(value: $opacity, in: 0...1)
+            Text(opacity, format: .number.precision(.fractionLength(2)))
+        }
         
         Button("Set Color") {
-            activeColor = Color(red: redValue/255.0, green: greenValue/255.0, blue: blueValue/255.0)
+            activeColor = Color(red: redValue/255.0, green: greenValue/255.0, blue: blueValue/255.0, opacity: opacity)
         }
         .buttonStyle(.borderedProminent)
         .padding()
