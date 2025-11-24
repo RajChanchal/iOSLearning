@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var selectedAge: Double = 100
+    @State private var selectedAge: Double = 100
+    @State private var clickButtonTitle: String = "Click Me"
     var body: some View {
         VStack {
             Image("hqdefault")
@@ -25,9 +26,17 @@ struct ContentView: View {
             Slider(value: $selectedAge, in: 0...255)
                 .tint(.green)
                 .padding()
-            Button("Click Me") {
+            Button(action: {
                 print("I am clicked")
+                clickButtonTitle = "Clicked"
+            }) {
+                Text(clickButtonTitle)
             }
+            .font(.title)
+            .padding()
+            .background(.red)
+            .foregroundStyle(.white)
+            .clipShape(.capsule)
         }
         .padding()
     }
