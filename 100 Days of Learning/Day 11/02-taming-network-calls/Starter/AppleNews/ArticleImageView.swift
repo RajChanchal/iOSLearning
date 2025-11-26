@@ -56,7 +56,7 @@ struct ArticleImageView: View {
         .mask(RoundedRectangle(cornerRadius: 8))
     } else {
       if imageService.progress < 1 {
-        ProgressView()
+        ProgressView(value: imageService.progress)
       } else {
         Image(systemName: "photo")
       }

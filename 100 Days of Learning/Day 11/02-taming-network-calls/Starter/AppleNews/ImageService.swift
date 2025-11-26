@@ -44,9 +44,30 @@ class ImageService {
     image = nil
 
     // Simulate image download
-    try await Task.sleep(for: .seconds(Int.random(in: 2..<4)))
-
+    guard let url else {
+      Logger.main.error("Url is nil")
+      return
+    }
+    let (bytes, response) = try await URLSession.shared.bytes(from: url)
+    guard let httpResponse = response as? HTTPURLResponse, httpResponse.isOK else {
+      Logger.main.error("Network resposne error")
+      return
+    }
+    let length = Int(httpResponse.expectedContentLength)
+    var data = Data(capacity: length)
+    let bytesToAccomodate = length / 100
+    var accomodator = 0
+    
+    for try await byte in bytes {
+      data.append(byte)
+      accomodator += 1
+      if accomodator >= bytesToAccomodate {
+        progress = Double(data.count) / Double(length)
+        accomodator = 0
+      }
+    }
+    
     progress = 1
-    image = Image(systemName: "photo")
+    image = Image(uiImage: UIImage(data: data) ?? UIImage())
   }
 }
