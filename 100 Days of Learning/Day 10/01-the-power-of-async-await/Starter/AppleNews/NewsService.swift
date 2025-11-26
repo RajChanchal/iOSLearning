@@ -53,7 +53,16 @@ class NewsAPIService: NewsService {
   static let apiKey = "5f5b4efd581e4e849e9e1caeaff86799"
   static let newsURL = URL(string: "https://newsapi.org/v2/everything?q=apple&apiKey=\(apiKey)")!
   func latestNews() async throws -> [Article]{
-    return []
+    let (data, response) = try await URLSession.shared.data(from: Self.newsURL)
+    guard let httpsResponse = response as? HTTPURLResponse, httpsResponse.isOK else {
+      throw NewsServiceError.serverResponseError
+    }
+    do {
+      let parsedResponse =  try JSONDecoder().decode(Response.self, from: data)
+      return parsedResponse.articles.filter { $0.author != nil && $0.urlToImage != nil }
+    }catch {
+      throw NewsServiceError.resultParsingError
+    }
   }
   
   func latestNews(_ handler: @escaping (Result<[Article], NewsServiceError>) -> Void) {
