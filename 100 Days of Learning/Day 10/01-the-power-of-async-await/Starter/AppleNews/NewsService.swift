@@ -50,9 +50,12 @@ class NewsAPIService: NewsService {
     let articles: [Article]
   }
 
-  static let apiKey = "<ADD_YOUR_KEY_HERE>"
+  static let apiKey = "5f5b4efd581e4e849e9e1caeaff86799"
   static let newsURL = URL(string: "https://newsapi.org/v2/everything?q=apple&apiKey=\(apiKey)")!
-
+  func latestNews() async throws -> [Article]{
+    return []
+  }
+  
   func latestNews(_ handler: @escaping (Result<[Article], NewsServiceError>) -> Void) {
     // 1. Task Definition
     let task = URLSession.shared.dataTask(with: URLRequest(url: Self.newsURL)) { data, response, error in
