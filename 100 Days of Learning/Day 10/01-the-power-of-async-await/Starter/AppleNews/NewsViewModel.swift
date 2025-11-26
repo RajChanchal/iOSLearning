@@ -44,15 +44,21 @@ class NewsViewModel {
 
   func fetchLatestNews() {
     news.removeAll()
-    newsService.latestNews { [weak self] result in
-      DispatchQueue.main.async {
-        switch result {
-        case .success(let articles):
-          self?.news = articles
-        case .failure:
-          self?.news = []
-        }
+    Task {
+      let articles = try await newsService.latestNews()
+      await MainActor.run {
+        news = articles
       }
     }
+//    newsService.latestNews { [weak self] result in
+//      DispatchQueue.main.async {
+//        switch result {
+//        case .success(let articles):
+//          self?.news = articles
+//        case .failure:
+//          self?.news = []
+//        }
+//      }
+//    }
   }
 }

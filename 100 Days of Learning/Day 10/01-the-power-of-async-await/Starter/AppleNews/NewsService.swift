@@ -41,6 +41,7 @@ enum NewsServiceError: Error {
 
 protocol NewsService {
   func latestNews(_ handler: @escaping (Result<[Article], NewsServiceError>) -> Void)
+  func latestNews() async throws -> [Article]
 }
 
 class NewsAPIService: NewsService {
@@ -110,6 +111,22 @@ class NewsAPIService: NewsService {
 }
 
 class MockNewsService: NewsService {
+  func latestNews() async throws -> [Article] {
+    let articles = [
+      Article(
+        title: "Lorem Ipsum",
+        url: URL(string: "https://apple.com"),
+        author: "Author",
+        description:
+        """
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam...
+        """,
+        urlToImage: "https://picsum.photos/300"
+      )
+    ]
+    return articles
+  }
   func latestNews(_ handler: @escaping (Result<[Article], NewsServiceError>) -> Void) {
     let articles = [
       Article(
