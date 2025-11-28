@@ -9,44 +9,28 @@
 import Foundation
 
 @propertyWrapper
-struct TwelveOrLess {
-    private var number: Int = 0
-    private static func normalize(_ number: Int) -> Int {
-        return min(12, number)
-    }
-    
+struct TwelveOrLess {    
     var wrappedValue: Int {
-        set {
-            number = Self.normalize(newValue)
-        }
-        get {
-            return number
+        didSet {
+            wrappedValue = min(12, wrappedValue)
         }
     }
     
     init(wrappedValue: Int) {
-        self.number = Self.normalize(wrappedValue)
+        self.wrappedValue = min(12, wrappedValue)
     }
 }
 
 @propertyWrapper
 struct Capitalized {
-    private var value: String
-    private static func normalize(_ s: String) -> String {
-        return s.capitalized
-    }
     var wrappedValue: String {
-        set {
-            value = Self.normalize(newValue)
-        }
-        
-        get {
-            return value
+        didSet{
+            wrappedValue = wrappedValue.capitalized
         }
     }
     
     init(wrappedValue: String) {
-        self.value = Self.normalize(wrappedValue)
+        self.wrappedValue = wrappedValue.capitalized
     }
 }
 
