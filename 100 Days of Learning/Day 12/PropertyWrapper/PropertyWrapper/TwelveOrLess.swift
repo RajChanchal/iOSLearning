@@ -11,23 +11,42 @@ import Foundation
 @propertyWrapper
 struct TwelveOrLess {
     private var number: Int = 0
-    var wrappedValue: Int {
+    private static func normalize(_ number: Int) -> Int {
         return min(12, number)
     }
+    
+    var wrappedValue: Int {
+        set {
+            number = Self.normalize(newValue)
+        }
+        get {
+            return number
+        }
+    }
+    
     init(wrappedValue: Int) {
-        self.number = wrappedValue
+        self.number = Self.normalize(wrappedValue)
     }
 }
 
 @propertyWrapper
 struct Capitalized {
     private var value: String
+    private static func normalize(_ s: String) -> String {
+        return s.capitalized
+    }
     var wrappedValue: String {
-        return value.capitalized
+        set {
+            value = Self.normalize(newValue)
+        }
+        
+        get {
+            return value
+        }
     }
     
     init(wrappedValue: String) {
-        self.value = wrappedValue
+        self.value = Self.normalize(wrappedValue)
     }
 }
 
