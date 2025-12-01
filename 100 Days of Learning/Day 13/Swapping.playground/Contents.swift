@@ -21,4 +21,24 @@ func swapGen<T>(a: inout T, b: inout T) {
 swapGen(a: &a, b: &b)
 print("Value of a: \(a), value of b: \(b)")
 
+protocol Shape {
+    func draw()
+}
+struct Rectangle: Shape {
+    func draw() {
+        print("Printing Rectangle")
+    }
+    
+    
+}
 
+struct Triangle: Shape {
+    func draw() {
+        print("Drawing Triangle")
+    }
+}
+
+let shapes:[Shape] = [Rectangle(), Triangle()]
+for shape in shapes {
+    shape.draw()
+}
