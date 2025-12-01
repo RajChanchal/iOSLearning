@@ -9,7 +9,7 @@
 import Foundation
 
 @propertyWrapper
-struct TwelveOrLess {    
+struct TwelveOrLess {
     var wrappedValue: Int {
         didSet {
             wrappedValue = min(12, wrappedValue)
