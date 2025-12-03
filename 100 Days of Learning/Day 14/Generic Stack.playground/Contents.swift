@@ -38,12 +38,19 @@ struct GenericStack <Element>{
     }
 }
 
+extension GenericStack {
+    var topItem: Element? {
+        items.last
+    }
+}
+
 var myStringStack = GenericStack<String>()
 myStringStack.push("Ali")
 myStringStack.push("Wasan")
 myStringStack.push("Khidmat")
 myStringStack.push("Joggi")
 
+print("Top: \(myStringStack.topItem)")
 print("Popping: \(myStringStack.pop())")
 print("Popping: \(myStringStack.pop())")
 print("Popping: \(myStringStack.pop())")
