@@ -17,6 +17,12 @@ struct GroupMessage {
     let groupId: String
 }
 
+struct BroadcastMessage {
+    let id: String
+    let message: String
+    let broadcastId: String
+}
+
 struct OneToOneChat: ChatManageable {
     typealias Message = OneToOneMessage
     func send(message: OneToOneMessage) {
@@ -29,3 +35,19 @@ struct GroupChat: ChatManageable {
         print("Send Group Message")
     }
 }
+
+struct BroadcastChat {
+    func announced() {
+        
+    }
+}
+
+//Confirming to ChatManageable in extension
+extension BroadcastChat: ChatManageable {
+    typealias Message = BroadcastMessage
+    func send(message: BroadcastMessage) {
+        print("Send Broadcast Message")
+    }
+}
+
+
