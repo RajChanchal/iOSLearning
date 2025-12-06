@@ -24,7 +24,8 @@ struct EntryRow: View {
         HStack{
             Text(entry.category)
             Spacer()
-            Text("$\(entry.amount, specifier: "%.2f")")
+            //Text("$\(entry.amount, specifier: "%.2f")")
+            Text(entry.amount, format: .currency(code: "USD"))
                 .foregroundStyle(entry.isExpense ? .red : .green)
         }
     }
