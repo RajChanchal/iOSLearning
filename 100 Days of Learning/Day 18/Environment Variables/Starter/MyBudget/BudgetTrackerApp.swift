@@ -76,25 +76,20 @@ struct BudgetTrackerApp: App {
 
   var body: some Scene {
     WindowGroup {
-      ContentView(entries: entries,
-                  incomeTextColor: incomeTextColor,
-                  expenseTextColor: expenseTextColor)
+      ContentView(entries: entries)
     }
   }
 }
 
 struct ContentView: View {
   let entries: [FinancialEntry]
-  let incomeTextColor: Color
-  let expenseTextColor: Color
   var body: some View {
     NavigationView {
       List {
         Section(header: Text("Entries")) {
           ForEach(entries) { entry in
-            FinancialEntryRow(entry: entry,
-            expenseTextColor: expenseTextColor,
-                              incomeTextColor: expenseTextColor)
+            FinancialEntryRow(entry: entry)
+              .environment(\.expenseColor, .orange)
           }
         }
       }
@@ -105,8 +100,10 @@ struct ContentView: View {
 
 struct FinancialEntryRow: View {
   let entry: FinancialEntry
-  let expenseTextColor: Color
-  let incomeTextColor: Color
+  @Environment(\.expenseColor)
+  var expenseTextColor: Color
+  @Environment(\.incomeColor)
+  var incomeTextColor: Color
   var body: some View {
     HStack {
       Text(entry.isExpense ? "Expense" : "Income")
@@ -114,5 +111,31 @@ struct FinancialEntryRow: View {
       Text("$\(entry.amount, specifier: "%.2f")")
         .foregroundColor(entry.isExpense ? expenseTextColor : incomeTextColor)
     }
+  }
+}
+
+
+
+struct ExpenseTextColorKey: EnvironmentKey {
+  static var defaultValue: Color {
+    return .red
+  }
+}
+
+struct IncomeTextColorKey: EnvironmentKey {
+  static var defaultValue: Color {
+    return .green
+  }
+}
+
+extension EnvironmentValues {
+  var expenseColor: Color {
+    get { self[ExpenseTextColorKey.self] }
+    set { self[ExpenseTextColorKey.self] =  newValue }
+  }
+  
+  var incomeColor: Color {
+    get { self[IncomeTextColorKey.self] }
+    set { self[IncomeTextColorKey.self] =  newValue }
   }
 }
