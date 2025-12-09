@@ -41,126 +41,66 @@ struct FinancialEntry: Identifiable {
   let isExpense: Bool
 }
 
+
 // MARK: - App & View Hierarchy
 
 @main
 struct BudgetTrackerApp: App {
-  let incomeTextColor: Color = .green
-  let expenseTextColor: Color = .orange
   let entries = [
-    FinancialEntry(
-      id: UUID(),
-      amount: 3000,
-      category: "Income",
-      isExpense: false
-    ),
-    FinancialEntry(
-      id: UUID(),
-      amount: 120,
-      category: "Groceries",
-      isExpense: true
-    ),
-    FinancialEntry(
-      id: UUID(),
-      amount: 500,
-      category: "Technology",
-      isExpense: true
-    ),
-    FinancialEntry(
-      id: UUID(),
-      amount: 10,
-      category: "Subscription",
-      isExpense: true
-    )
+    FinancialEntry(id: UUID(), amount: 3000, category: "Income", isExpense: false),
+    FinancialEntry(id: UUID(), amount: 120, category: "Groceries", isExpense: true),
+    FinancialEntry(id: UUID(), amount: 500, category: "Technology", isExpense: true),
+    FinancialEntry(id: UUID(), amount: 10, category: "Subscription", isExpense: true)
   ]
 
   var body: some Scene {
     WindowGroup {
-      ContentView(entries: entries)
+      ContentView()
     }
   }
 }
 
+
 struct ContentView: View {
-  let entries: [FinancialEntry]
+  @State var entries: [FinancialEntry] = []
+
   var body: some View {
     NavigationView {
       List {
         Section(header: Text("Entries")) {
           ForEach(entries) { entry in
             FinancialEntryRow(entry: entry)
-              .environment(\.expenseColor, .orange)
           }
         }
       }
       .navigationTitle("Budget Tracker")
+      .navigationBarItems(trailing: Button(action: {
+        let newEntry = FinancialEntry(id: UUID(), amount: 34.0, category: "Grocery", isExpense: true)
+        entries.append(newEntry)
+      }, label: {
+        Image(systemName: "plus")
+      }))
     }
   }
 }
 
+
 struct FinancialEntryRow: View {
   let entry: FinancialEntry
-  @Environment(\.expenseColor)
-  var expenseTextColor: Color
-  @Environment(\.incomeColor)
-  var incomeTextColor: Color
+
   var body: some View {
     HStack {
       Text(entry.isExpense ? "Expense" : "Income")
       Spacer()
       Text("$\(entry.amount, specifier: "%.2f")")
-        .foregroundColor(entry.isExpense ? expenseTextColor : incomeTextColor)
+        .foregroundColor(entry.isExpense ? .red : .green)
     }
   }
 }
 
 
+// MARK: - SwiftUI Preview
 
-struct ExpenseTextColorKey: EnvironmentKey {
-  static var defaultValue: Color {
-    return .red
-  }
-}
-
-struct IncomeTextColorKey: EnvironmentKey {
-  static var defaultValue: Color {
-    return .green
-  }
-}
-
-extension EnvironmentValues {
-  var expenseColor: Color {
-    get { self[ExpenseTextColorKey.self] }
-    set { self[ExpenseTextColorKey.self] =  newValue }
-  }
-  
-  var incomeColor: Color {
-    get { self[IncomeTextColorKey.self] }
-    set { self[IncomeTextColorKey.self] =  newValue }
-  }
-}
-
-
-struct Counter: View {
-  var counter: Int = 0
-  var body: some View {
-      Text("Counter: \(counter)")
-    
-    Button("Increment") {
-      counter += 1
-    }
-  }
-}
-
-struct MyStruct {
-  var counter: Int = 0
-  func test(completion: ()->Void) {
-    completion()
-  }
-  
-  func ok() {
-    test {
-      counter += 1
-    }
-  }
+#Preview {
+  ContentView()
 }
