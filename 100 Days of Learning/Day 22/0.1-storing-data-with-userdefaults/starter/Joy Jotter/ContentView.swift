@@ -34,9 +34,9 @@ import SwiftUI
 
 struct ContentView: View {
   @EnvironmentObject var joyJotterVM: JoyJotterVM
-
+  @AppStorage("selectedTab") var selectedTab: Int = 0
   var body: some View {
-    TabView {
+    TabView(selection: $selectedTab) {
       CategoriesListView()
         .tabItem {
           Label("Categories", systemImage: "square.grid.2x2")
