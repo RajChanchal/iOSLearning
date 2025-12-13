@@ -91,6 +91,21 @@ class JoyJotterVM: ObservableObject {
     }
   }
   
+  static func readDataOfJokes() -> [Joke]?{
+    do {
+      guard let fileUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("savedJokes.json") else { return nil }
+      if FileManager.default.fileExists(atPath: fileUrl.path) {
+        let data = try Data(contentsOf: fileUrl)
+        let jokes = try JSONDecoder().decode([Joke].self, from: data)
+        return jokes
+      }
+      return nil
+    }
+    catch {
+      print("Error: \(error.localizedDescription)")
+      return nil
+    }
+  }
 }
 
 extension JoyJotterVM {

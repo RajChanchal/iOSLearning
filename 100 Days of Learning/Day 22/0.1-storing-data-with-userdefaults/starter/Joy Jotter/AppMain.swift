@@ -34,7 +34,7 @@ import SwiftUI
 
 @main
 struct AppMain: App {
-  @StateObject private var joyJotterVM = JoyJotterVM(jokes: JoyJotterVM.basicJokes)
+  @StateObject private var joyJotterVM = JoyJotterVM(jokes: JoyJotterVM.readDataOfJokes() ?? JoyJotterVM.basicJokes)
 
   var body: some Scene {
     WindowGroup {
