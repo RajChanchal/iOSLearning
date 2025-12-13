@@ -41,7 +41,7 @@ class JoyJotterVM: ObservableObject {
   var categories: [String] {
     return Array(Set(jokes.map { $0.category })).sorted()
   }
-
+  
   init(
     jokes: [Joke],
     isFavTabVisible: Bool = true,
@@ -51,14 +51,22 @@ class JoyJotterVM: ObservableObject {
     self.favoriteJokes = jokes.filter { $0.isFav }
     self.isFavTabVisible = isFavTabVisible
     self.isFavVisibleInCard = isFavVisibleInCard
+    
+    let notificationCenter = NotificationCenter.default
+    notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willResignActiveNotification, object: nil)
   }
-
+  
+  @objc func appMovedToBackground() {
+    print("Saving to background")
+    writeDataOf(jokes: jokes)
+  }
+  
   // MARK: - Methods
   func add(joke: Joke) {
     jokes.append(joke)
     updateFavorite(with: joke)
   }
-
+  
   func updateFavorite(with joke: Joke) {
     if joke.isFav {
       favoriteJokes.append(joke)
@@ -66,6 +74,23 @@ class JoyJotterVM: ObservableObject {
       favoriteJokes.removeAll { $0.id == joke.id }
     }
   }
+    
+  func writeDataOf(jokes: [Joke]) {
+    do {
+      let fileURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("savedJokes.json")
+      if FileManager.default.fileExists(atPath: fileURL.path) {
+        try FileManager.default.removeItem(at: fileURL)
+      }
+      
+      let json = try JSONEncoder().encode(jokes)
+      try json.write(to: fileURL)
+      print("Data written successfuly ")
+    }
+    catch {
+      print("Error writing: \(error.localizedDescription)")
+    }
+  }
+  
 }
 
 extension JoyJotterVM {
