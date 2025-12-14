@@ -34,6 +34,7 @@ import SwiftUI
 import SwiftData
 
 struct JokeAuthorsListView: View {
+  @Environment(\.modelContext) var modelContext
   @Query(sort: \JokeAuthor.country, order: .forward) var jokeAuthors: [JokeAuthor]
   @State private var isAddAuthorViewPresented = false
   var selectedAuthor: JokeAuthor?
@@ -57,7 +58,11 @@ struct JokeAuthorsListView: View {
           }
         }
         .onDelete { indexSet in
-//          jokeAuthors.remove(atOffsets: indexSet)
+          for index in indexSet {
+            let author = jokeAuthors[index]
+            modelContext.delete(author)
+          }
+          
         }
       }
       .listStyle(PlainListStyle())
