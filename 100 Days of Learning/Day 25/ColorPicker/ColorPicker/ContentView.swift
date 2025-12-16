@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var selectedAge = 25.0
     var body: some View {
         VStack {
             Image("driving")
@@ -17,11 +18,11 @@ struct ContentView: View {
                 .font(.largeTitle)
                 .padding()
                 .background(.green)
-            Text("100")
+            Text(selectedAge, format: .number.precision(.fractionLength(0)))
                 .bold()
                 .font(.title)
                 .foregroundStyle(.orange)
-            Slider(value: .constant(100), in: 0...255)
+            Slider(value: $selectedAge, in: 0...255)
                 .tint(.green)
                 .padding()
             Button("Next"){
