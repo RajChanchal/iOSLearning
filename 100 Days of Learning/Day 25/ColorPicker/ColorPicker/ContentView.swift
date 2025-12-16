@@ -8,26 +8,40 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var selectedAge = 25.0
+    @State private var redValue = 0.0
+    @State private var greenValue = 0.0
+    @State private var blueValue = 0.0
+    @State private var activeColor: Color = .gray
     var body: some View {
         VStack {
-            Image("driving")
-                .resizable()
-                .frame(width: 100, height: 100)
-            Text("Select Cat Age")
-                .font(.largeTitle)
-                .padding()
-                .background(.green)
-            Text(selectedAge, format: .number.precision(.fractionLength(0)))
-                .bold()
-                .font(.title)
-                .foregroundStyle(.orange)
-            Slider(value: $selectedAge, in: 0...255)
-                .tint(.green)
-                .padding()
-            Button("Next"){
-                
+            RoundedRectangle(cornerRadius: 25.0)
+                .frame(width: 300, height: 200)
+                .foregroundStyle(activeColor)
+                .padding(.bottom, 24)
+            Text("Red")
+            HStack {
+                Slider(value: $redValue, in: 0.0...255.0)
+                    .tint(.red)
             }
+            
+            Text("Green")
+            HStack {
+                Slider(value: $greenValue, in: 0.0...255.0)
+                    .tint(.green)
+            }
+            Text("Blue")
+            HStack {
+                Slider(value: $blueValue, in: 0.0...255.0)
+                    .tint(.blue)
+            }
+            
+            Button("Set Colors") {
+                activeColor = Color(red: redValue / 255.0,
+                                    green: greenValue / 255.0,
+                                    blue: blueValue / 255.0)
+            }
+            .buttonStyle(.borderedProminent)
+            .padding(16)
         }
         .padding()
     }
