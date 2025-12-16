@@ -12,8 +12,18 @@ struct ContentView: View {
         VStack {
             Image("driving")
                 .resizable()
-            Text("Welcome to my app")
+                .frame(width: 100, height: 100)
+            Text("Select Cat Age")
                 .font(.largeTitle)
+                .padding()
+                .background(.green)
+            Text("100")
+                .bold()
+                .font(.title)
+                .foregroundStyle(.orange)
+            Slider(value: .constant(100), in: 0...255)
+                .tint(.green)
+                .padding()
             Button("Next"){
                 
             }
